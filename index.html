@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>캔따개 기념일 아카이브</title>
+<title>캔따개 아카이브</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -299,6 +299,15 @@ html[data-box="neon"] .panel,html[data-box="neon"] .ccard{background:color-mix(i
 .help-step .n{flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
 .help-tag{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600;vertical-align:middle}
 .help-warn{background:color-mix(in srgb,#ff9800 14%,transparent);border:1px solid color-mix(in srgb,#ff9800 32%,transparent);border-radius:10px;padding:10px 12px;font-size:.8rem;color:var(--text);line-height:1.65}
+.link-card{text-align:center}
+.link-badge{display:inline-flex;align-items:center;gap:.45em;font-family:var(--serif);font-size:1.35rem;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);border-radius:999px;padding:8px 20px;margin:2px 0 16px;box-shadow:0 10px 30px -18px var(--glow)}
+.link-box{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:10px 10px 10px 14px;margin-bottom:14px}
+.link-box .u{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:var(--dim);text-align:left;scrollbar-width:none}
+.link-box .u::-webkit-scrollbar{height:0}
+.link-box .u b{color:var(--accent)}
+.link-box .cpy{flex:0 0 auto;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:.9rem;transition:.2s var(--ease)}
+.link-box .cpy:hover{transform:translateY(-1px);box-shadow:0 8px 18px -8px var(--glow)}
+.link-note{font-size:.78rem;color:var(--faint);line-height:1.7;margin:0 0 4px}
 
 .view-exit{position:fixed;right:18px;bottom:18px;z-index:95;display:none;padding:11px 16px}
 body[data-mode="view"] .view-exit{display:inline-flex}
@@ -875,8 +884,31 @@ function copyShortLink(){
   if(!api||!cfToken()){toast("\uba3c\uc800 \uacc4\uc815\uc5d0 \ub85c\uadf8\uc778\ud574\uc8fc\uc138\uc694","fa-circle-info");openAccountModal();return;}
   if(!h){toast("\uba3c\uc800 '\ub0b4 \ub9c1\ud06c \uc774\ub984'\uc744 \uc120\uc810\ud574\uc8fc\uc138\uc694","fa-circle-info");return;}
   cloudSaveThen(function(){
-    var url=baseUrl()+"#u="+encodeURIComponent(h)+(BUILTIN_API?"":("&api="+encodeURIComponent(api)));
-    copyText(url,function(ok){toast(ok?"\uc9e7\uc740 \uacf5\uc720 \ub9c1\ud06c \ubcf5\uc0ac \uc644\ub8cc!":"\ubcf5\uc0ac \uc2e4\ud328","fa-link");});
+    var url=BUILTIN_API?(baseUrl()+"#"+encodeURIComponent(h)):(baseUrl()+"#u="+encodeURIComponent(h)+"&api="+encodeURIComponent(api));
+    copyText(url,function(){});
+    showLinkModal(url,h);
+  });
+}
+function showLinkModal(url,handle){
+  closeModal();
+  var mark=(url.indexOf("#u=")>=0)?("#u="+handle):("#"+handle),disp=esc(url).replace(esc(mark),'<b>'+esc(mark)+'</b>');
+  var body='<h3><i class="fa-solid fa-link"></i> \ub0b4 \uacf5\uc720 \ub9c1\ud06c</h3>'+
+    '<div class="link-card">'+
+      '<div class="link-badge"><i class="fa-solid fa-heart"></i> @'+esc(handle)+'</div>'+
+      '<div class="link-box"><div class="u">'+disp+'</div><button class="cpy" data-lk="copy" title="\ubcf5\uc0ac"><i class="fa-solid fa-copy"></i></button></div>'+
+      '<p class="link-note">\uc774 \ub9c1\ud06c\ub97c \ubcf4\ub0b4\uba74 \uc0c1\ub300\ubc29\uc740 \uae54\ub054\ud55c <b>\ubbf8\ub9ac\ubcf4\uae30</b>\ub85c \ubd05\ub2c8\ub2e4. \ub0b4\uc6a9\uc744 \ubc14\uafc8 \ub550 \u201c\ud074\ub77c\uc6b0\ub4dc\uc5d0 \uc800\uc7a5\u201d \ud558\uba74 \uc774 \ub9c1\ud06c\uac00 \uac19\uc740 \uc8fc\uc18c\ub85c \ucd5c\uc2e0\ud654\ub3fc\uc694.</p>'+
+    '</div>'+
+    '<div class="mbtns"><button class="tbtn solid" data-lk="copy"><i class="fa-solid fa-copy"></i> \ub9c1\ud06c \ubcf5\uc0ac</button>'+
+    '<button class="tbtn" data-lk="open"><i class="fa-solid fa-arrow-up-right-from-square"></i> \ub9c1\ud06c \uc5f4\uc5b4\ubcf4\uae30</button>'+
+    '<button class="tbtn" data-action="close-modal">\ub2eb\uae30</button></div>';
+  var wrap=document.createElement("div");wrap.className="modal-scrim no-capture";wrap.id="__modal";
+  wrap.innerHTML='<div class="modal">'+body+'</div>';
+  document.body.appendChild(wrap);
+  wrap.addEventListener("click",function(e){
+    if(e.target.id==="__modal"){closeModal();return;}
+    var b=e.target.closest("[data-lk]");if(!b)return;var lk=b.getAttribute("data-lk");
+    if(lk==="copy")copyText(url,function(ok){toast(ok?"\ub9c1\ud06c \ubcf5\uc0ac\ub428!":"\ubcf5\uc0ac \uc2e4\ud328","fa-link");});
+    else if(lk==="open")window.open(url,"_blank");
   });
 }
 function cloudSaveThen(cb){saveLocal();apiFetch("/api/save",{method:"POST",body:JSON.stringify({data:state})}).then(cb).catch(function(err){toast(err.message,"fa-triangle-exclamation");});}
@@ -1032,6 +1064,7 @@ function hashParam(k){try{return new URLSearchParams(location.hash.replace(/^#/,
 function boot(){
   buildPanel();
   var uHandle=hashParam("u"),uApi=hashParam("api"),fromHash=readHash();
+  if(!uHandle&&!fromHash){var raw=location.hash.replace(/^#/,"");if(raw&&raw.indexOf("=")<0&&raw.indexOf("&")<0&&/^[A-Za-z0-9\-]+$/.test(raw))uHandle=decodeURIComponent(raw);}
   if(fromHash){hydrate(fromHash);}
   else{var ls=loadLocal();if(ls){hydrate(ls);}else{var raw=$("#state-data").textContent.trim();if(raw){try{hydrate(JSON.parse(raw));}catch(e){}}}}
   history.replaceState({view:"board",active:state.active},"");
