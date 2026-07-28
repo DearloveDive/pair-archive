@@ -430,6 +430,11 @@ var FONTS=[{id:"fraunces",name:"Fraunces",tag:"\uB85C\uB9E8\uD2F1 \uC138\uB9AC\u
 var STICKERS=["\u2728","\uD83C\uDF19","\uD83D\uDCAB","\uD83C\uDF80","\uD83D\uDDA4","\uD83E\uDD40","\uD83D\uDD6F\uFE0F","\uD83D\uDC8C","\u2B50","\uD83E\uDEE7","\uD83E\uDD8B","\uD83C\uDF37","\u2601\uFE0F","\uD83D\uDC97","\uD83D\uDD2E","\uD83D\uDD4A\uFE0F","\uD83C\uDF52","\uD83C\uDF1C","\u267E\uFE0F","\uD83D\uDC9B","\uD83C\uDF39","\uD83D\uDC8D","\uD83C\uDF88","\uD83C\uDF1F"];
 var RTCOLORS=["#e23d5a","#f2789a","#f0a6c0","#ff8fab","#f6a878","#e8bd7a","#f5d76e","#8fbf8a","#5fb3a3","#7fc8e0","#6f8ff0","#b6a4f5","#c78ce0","#8a7a99","#3a3346","#ffffff"];
 var LS_KEY="canOpenerArchive:v4";
+/* ====== 배포용 설정 ======
+   아래 따옴표 안에 본인의 Cloudflare Worker 주소를 넣으면,
+   방문자가 "서버 주소"를 붙여넣지 않아도 됩니다. (예: "https://pair-api.OOO.workers.dev")
+   비워두면("") 기존처럼 계정 창에서 직접 입력합니다. */
+var BUILTIN_API="";
 
 function m(){return "id_"+Math.random().toString(36).slice(2,9);}
 function defaultDoc(){
@@ -743,7 +748,7 @@ function openShareModal(){
 function closeModal(){var mdl=$("#__modal");if(mdl)mdl.remove();}
 
 /* ===== cloud (Cloudflare Worker + KV) ===== */
-function cfApi(){var u=localStorage.getItem("cf_api")||"";if(!u){try{u=new URLSearchParams(location.hash.replace(/^#/,"")).get("api")||"";}catch(e){}}return (u||"").replace(/\/$/,"");}
+function cfApi(){var u=(BUILTIN_API||"")||localStorage.getItem("cf_api")||"";if(!u){try{u=new URLSearchParams(location.hash.replace(/^#/,"")).get("api")||"";}catch(e){}}return (u||"").replace(/\/$/,"");}
 function setCfApi(u){localStorage.setItem("cf_api",(u||"").trim().replace(/\/$/,""));}
 function cfToken(){return localStorage.getItem("cf_token")||"";}
 function cfEmail(){return localStorage.getItem("cf_email")||"";}
@@ -769,7 +774,7 @@ function openAccountModal(){
       '<div class="switch"><button class="on" data-tab="login">\ub85c\uadf8\uc778</button><button data-tab="signup">\ud68c\uc6d0\uac00\uc785</button></div>'+
       '<div class="mfield"><label>\uc774\uba54\uc77c</label><input id="acEmail" type="email" placeholder="you@example.com"></div>'+
       '<div class="mfield"><label>\ube44\ubc00\ubc88\ud638</label><input id="acPw" type="password" placeholder="\u25cf\u25cf\u25cf\u25cf\u25cf\u25cf"></div>'+
-      '<div class="mbtns"><button class="tbtn solid" data-ac="auth"><i class="fa-solid fa-right-to-bracket"></i> <span id="acBtnLabel">\ub85c\uadf8\uc778</span></button><button class="tbtn" data-ac="changeapi">\uc11c\ubc84 \uc8fc\uc18c \ubcc0\uacbd</button><button class="tbtn" data-action="close-modal">\ub2eb\uae30</button></div>';
+      '<div class="mbtns"><button class="tbtn solid" data-ac="auth"><i class="fa-solid fa-right-to-bracket"></i> <span id="acBtnLabel">\ub85c\uadf8\uc778</span></button>'+(BUILTIN_API?"":'<button class="tbtn" data-ac="changeapi">\uc11c\ubc84 \uc8fc\uc18c \ubcc0\uacbd</button>')+'<button class="tbtn" data-action="close-modal">\ub2eb\uae30</button></div>';
   } else {
     var h=cfHandle();
     inner='<h3><i class="fa-solid fa-circle-user"></i> \ub0b4 \uacc4\uc815</h3>'+
@@ -827,7 +832,7 @@ function copyShortLink(){
   if(!api||!cfToken()){toast("\uba3c\uc800 \uacc4\uc815\uc5d0 \ub85c\uadf8\uc778\ud574\uc8fc\uc138\uc694","fa-circle-info");openAccountModal();return;}
   if(!h){toast("\uba3c\uc800 '\ub0b4 \ub9c1\ud06c \uc774\ub984'\uc744 \uc120\uc810\ud574\uc8fc\uc138\uc694","fa-circle-info");return;}
   cloudSaveThen(function(){
-    var url=baseUrl()+"#u="+encodeURIComponent(h)+"&api="+encodeURIComponent(api);
+    var url=baseUrl()+"#u="+encodeURIComponent(h)+(BUILTIN_API?"":("&api="+encodeURIComponent(api)));
     copyText(url,function(ok){toast(ok?"\uc9e7\uc740 \uacf5\uc720 \ub9c1\ud06c \ubcf5\uc0ac \uc644\ub8cc!":"\ubcf5\uc0ac \uc2e4\ud328","fa-link");});
   });
 }
