@@ -590,7 +590,7 @@ function renderTimeline(){
     var row='<div class="trow" data-action="toggle-ms" data-mid="'+mo.id+'">'+
       '<span class="tdot"><i class="fa-solid '+esc(mo.icon||"fa-heart")+'"></i></span>'+
       '<span class="tmeta"><div class="tdate">'+fmtDate(mo.date)+'</div><div class="ttitle">'+(esc(plain(mo.title))||'<span style="color:var(--faint)">\uC81C\uBAA9 \uC5C6\uC74C</span>')+'</div></span>'+
-      '<span class="ttag">#'+esc(mo.tag||"")+'</span>'+
+      '<span class="ttag">#'+esc(plain(mo.tag||""))+'</span>'+
       '<span class="tctrl no-capture">'+
         '<button class="mini" data-action="up" data-mid="'+mo.id+'" '+(i===0?"disabled style=opacity:.3":"")+'><i class="fa-solid fa-chevron-up"></i></button>'+
         '<button class="mini" data-action="down" data-mid="'+mo.id+'" '+(i===ms.length-1?"disabled style=opacity:.3":"")+'><i class="fa-solid fa-chevron-down"></i></button>'+
