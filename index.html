@@ -322,6 +322,7 @@ html[data-box="neon"] .panel,html[data-box="neon"] .ccard{background:color-mix(i
 
 .view-exit{position:fixed;right:18px;bottom:18px;z-index:95;display:none;padding:11px 16px}
 body[data-mode="view"] .view-exit{display:inline-flex}
+body.shared .view-exit{display:none!important}
 body[data-mode="view"] .no-capture{display:none!important}
 body[data-mode="view"] [contenteditable]{pointer-events:none}
 body[data-mode="view"] [contenteditable]:hover{background:transparent;box-shadow:none}
@@ -556,15 +557,15 @@ function animateNumber(node,to){if(!node)return;if(window.matchMedia&&window.mat
 function personHtml(key,p){
   var style=p.photo?('style="background-image:url('+"'"+p.photo+"'"+')"'):"";
   return '<div class="person"><div class="img-slot avatar '+(p.photo?"filled":"")+'" '+style+' data-pick="header.'+key+'.photo" title="\uD504\uB85C\uD544 \uC0AC\uC9C4"><div class="ph"><i class="fa-solid fa-user-astronaut"></i><span>\uC0AC\uC9C4</span></div><div class="cam"><i class="fa-solid fa-camera"></i></div></div>'+
-    '<div class="nm eh" contenteditable="true" data-edit="header.'+key+'.name" data-ph="\uC774\uB984">'+esc(p.name)+'</div>'+
-    '<div class="bio" contenteditable="true" data-edit="header.'+key+'.bio" data-ph="\uD55C \uC904 \uC18C\uAC1C">'+esc(p.bio)+'</div></div>';
+    '<div class="nm eh" contenteditable="true" data-edit="header.'+key+'.name" data-ph="\uC774\uB984">'+(p.name||"")+'</div>'+
+    '<div class="bio" contenteditable="true" data-edit="header.'+key+'.bio" data-ph="\uD55C \uC904 \uC18C\uAC1C">'+(p.bio||"")+'</div></div>';
 }
 function renderHeader(){
   var d=D(),L=d.labels,bg=boxBg("head",true);
   $("#pHead").innerHTML=bg.layer+'<div class="panel-body">'+
-    '<div style="text-align:center;margin-bottom:6px"><span class="mini-lbl" contenteditable="true" data-edit="labels.pair" data-ph="\uB77C\uBCA8">'+esc(L.pair)+'</span></div>'+
+    '<div style="text-align:center;margin-bottom:6px"><span class="mini-lbl" contenteditable="true" data-edit="labels.pair" data-ph="\uB77C\uBCA8">'+(L.pair||"")+'</span></div>'+
     '<h1 class="arch-title eh" contenteditable="true" data-rich data-edit="title" data-ph="\uC81C\uBAA9">'+(d.title||"")+'</h1>'+
-    '<div class="pair">'+personHtml("a",d.header.a)+'<div class="connector"><div class="line"></div><div class="sym eh" contenteditable="true" data-edit="header.sym" data-ph="\u221E">'+esc(d.header.sym)+'</div><div class="line"></div></div>'+personHtml("b",d.header.b)+'</div>'+
+    '<div class="pair">'+personHtml("a",d.header.a)+'<div class="connector"><div class="line"></div><div class="sym eh" contenteditable="true" data-edit="header.sym" data-ph="\u221E">'+(d.header.sym||"")+'</div><div class="line"></div></div>'+personHtml("b",d.header.b)+'</div>'+
     '<p class="tagline" contenteditable="true" data-rich data-edit="tagline" data-ph="\uD55C \uBB38\uC7A5">'+(d.tagline||"")+'</p>'+
     '</div>'+bg.btn;
 }
@@ -574,11 +575,11 @@ function renderDday(){
   var display=dc>=0?dc+1:Math.abs(dc),sign=dc>=0?"D+":"D-",label=dc>=0?("\uD568\uAED8\uD55C \uC9C0 "+(dc+1)+"\uC77C\uC9F8"):("\uC2DC\uC791\uAE4C\uC9C0 "+Math.abs(dc)+"\uC77C");
   var cards=upcoming3().map(function(a){return '<div class="anni"><div class="mk">'+esc(a.mk)+'</div><div class="dt">'+fmtDate(a.date)+'</div><div class="rem">'+(a.remain===0?"\uC624\uB298!":"D-"+a.remain)+' <small>\uB0A8\uC74C</small></div></div>';}).join("")||'<div class="anni" style="grid-column:1/-1"><div class="rem">\uB2E4\uAC00\uC624\uB294 \uAE30\uB150\uC77C \uC5C6\uC74C</div></div>';
   host.innerHTML=bg.layer+'<div class="panel-body">'+
-    '<div class="mini-lbl" contenteditable="true" data-edit="labels.dday" data-ph="\uB77C\uBCA8" style="margin-bottom:8px">'+esc(L.dday)+'</div>'+
-    '<div class="since-row no-capture"><span contenteditable="true" data-edit="labels.since">'+esc(L.since)+'</span><input type="date" id="startDate" value="'+esc(d.startDate)+'"></div>'+
-    '<div class="dnum"><span class="plus">'+sign+'</span><span id="dnumVal">0</span><span class="unit" contenteditable="true" data-edit="labels.unit">'+esc(L.unit)+'</span></div>'+
+    '<div class="mini-lbl" contenteditable="true" data-edit="labels.dday" data-ph="\uB77C\uBCA8" style="margin-bottom:8px">'+(L.dday||"")+'</div>'+
+    '<div class="since-row no-capture"><span contenteditable="true" data-edit="labels.since">'+(L.since||"")+'</span><input type="date" id="startDate" value="'+esc(d.startDate)+'"></div>'+
+    '<div class="dnum"><span class="plus">'+sign+'</span><span id="dnumVal">0</span><span class="unit" contenteditable="true" data-edit="labels.unit">'+(L.unit||"")+'</span></div>'+
     '<div class="dsub">'+esc(label)+' \u00B7 '+fmtDate(d.startDate)+'</div>'+
-    '<div class="anni-lbl-row"><span class="mini-lbl" contenteditable="true" data-edit="labels.anni">'+esc(L.anni)+'</span></div>'+
+    '<div class="anni-lbl-row"><span class="mini-lbl" contenteditable="true" data-edit="labels.anni">'+(L.anni||"")+'</span></div>'+
     '<div class="anni-grid">'+cards+'</div></div>'+bg.btn;
   animateNumber($("#dnumVal"),display);
 }
@@ -600,7 +601,7 @@ function renderTimeline(){
       var img=mo.image?('<div class="img-slot td-img filled" style="background-image:url('+"'"+mo.image+"'"+')" data-pick-ms="'+mo.id+'"><div class="cam no-capture"><i class="fa-solid fa-camera"></i></div></div>')
         :('<div class="img-slot td-img no-capture" data-pick-ms="'+mo.id+'"><div class="ph"><i class="fa-solid fa-image"></i><span>\uB300\uD45C \uC774\uBBF8\uC9C0 \uCD94\uAC00</span></div></div>');
       detail='<div class="tdetail">'+
-        '<div class="td-row no-capture"><input type="date" value="'+esc(mo.date)+'" data-mid="'+mo.id+'" data-field="date"><button class="tbtn" data-action="pick-icon" data-mid="'+mo.id+'"><i class="fa-solid '+esc(mo.icon||"fa-heart")+'"></i> \uc544\uc774\ucf58</button><span style="font-size:.72rem;color:var(--faint)">#<span contenteditable="true" data-mid="'+mo.id+'" data-field="tag" data-ph="\ud0dc\uadf8">'+esc(mo.tag)+'</span></span></div>'+
+        '<div class="td-row no-capture"><input type="date" value="'+esc(mo.date)+'" data-mid="'+mo.id+'" data-field="date"><button class="tbtn" data-action="pick-icon" data-mid="'+mo.id+'"><i class="fa-solid '+esc(mo.icon||"fa-heart")+'"></i> \uc544\uc774\ucf58</button><span style="font-size:.72rem;color:var(--faint)">#<span contenteditable="true" data-mid="'+mo.id+'" data-field="tag" data-ph="\ud0dc\uadf8">'+(mo.tag||"")+'</span></span></div>'+
         '<div class="ttitle" style="white-space:normal;font-size:1.15rem;margin-bottom:8px" contenteditable="true" data-rich data-mid="'+mo.id+'" data-field="title" data-ph="\uc81c\ubaa9">'+(mo.title||"")+'</div>'+
         img+
         '<div class="td-quote" contenteditable="true" data-rich data-mid="'+mo.id+'" data-field="desc" data-ph="\ud55c \uc904 \ub300\uc0ac / \uc124\uba85">'+(mo.desc||"")+'</div>'+
@@ -609,17 +610,17 @@ function renderTimeline(){
     }
     return row+detail;
   }).join("")||'<div style="color:var(--faint);padding:24px 10px;text-align:center;font-size:.85rem">\uCCAB \uC21C\uAC04\uC744 \uAE30\uB85D\uD574\uBCF4\uC138\uC694</div>';
-  host.innerHTML=bg.layer+'<div class="panel-body"><div class="time-head"><span class="mini-lbl" contenteditable="true" data-edit="labels.timeline">'+esc(L.timeline)+'</span></div><div class="tlist">'+rows+'</div><button class="add-node no-capture" data-action="add-node"><i class="fa-solid fa-plus"></i> \uB9C8\uC77C\uC2A4\uD1A4 \uCD94\uAC00</button></div>'+bg.btn;
+  host.innerHTML=bg.layer+'<div class="panel-body"><div class="time-head"><span class="mini-lbl" contenteditable="true" data-edit="labels.timeline">'+(L.timeline||"")+'</span></div><div class="tlist">'+rows+'</div><button class="add-node no-capture" data-action="add-node"><i class="fa-solid fa-plus"></i> \uB9C8\uC77C\uC2A4\uD1A4 \uCD94\uAC00</button></div>'+bg.btn;
 }
 function renderMusic(){
   var d=D(),mu=d.music,L=d.labels,cs=mu.cover?('style="background-image:url('+"'"+mu.cover+"'"+')"'):"",bg=boxBg("music",true);
   $("#pMusic").innerHTML=bg.layer+'<div class="panel-body">'+
-    '<div class="mini-lbl" contenteditable="true" data-edit="labels.music" style="margin-bottom:12px">'+esc(L.music)+'</div>'+
+    '<div class="mini-lbl" contenteditable="true" data-edit="labels.music" style="margin-bottom:12px">'+(L.music||"")+'</div>'+
     '<div class="player"><div class="lp" id="lp"><div class="disc"></div>'+
       '<div class="img-slot cover '+(mu.cover?"filled":"")+'" '+cs+' data-pick="music.cover">'+(mu.cover?"":'<i class="fa-solid fa-compact-disc"></i>')+'<div class="cam no-capture"><i class="fa-solid fa-camera"></i></div></div>'+
       '<div class="hole"></div><div class="tone"><div class="arm"></div></div></div>'+
-    '<div class="p-meta"><div class="p-title eh" contenteditable="true" data-edit="music.title" data-ph="\uACE1 \uC81C\uBAA9">'+esc(mu.title)+'</div>'+
-      '<div class="p-artist eh" contenteditable="true" data-edit="music.artist" data-ph="\uC544\uD2F0\uC2A4\uD2B8">'+esc(mu.artist)+'</div>'+
+    '<div class="p-meta"><div class="p-title eh" contenteditable="true" data-edit="music.title" data-ph="\uACE1 \uC81C\uBAA9">'+(mu.title||"")+'</div>'+
+      '<div class="p-artist eh" contenteditable="true" data-edit="music.artist" data-ph="\uC544\uD2F0\uC2A4\uD2B8">'+(mu.artist||"")+'</div>'+
       '<div class="p-lyric" contenteditable="true" data-rich data-edit="music.lyric" data-ph="\uD558\uC774\uB77C\uC774\uD2B8 \uAC00\uC0AC">'+(mu.lyric||"")+'</div>'+
       '<div class="p-ctrl"><button class="play-btn" data-action="play"><i class="fa-solid '+(isPlaying?"fa-pause":"fa-play")+'" id="playIcon"></i></button>'+
         '<input class="src-in no-capture" id="ytInput" placeholder="YouTube \uB9C1\uD06C" value="'+esc(mu.youtube)+'"></div>'+
@@ -639,7 +640,7 @@ function renderPlaque(){
   var d=D(),pl=d.plaque||{},L=d.labels,bg=boxBg("plaque",true),badge=annivBadge(d.startDate);
   $("#pPlaque").innerHTML=bg.layer+'<div class="panel-body">'+
     '<div class="pl-seal"><i class="fa-solid fa-medal"></i></div>'+
-    '<div class="mini-lbl" contenteditable="true" data-edit="labels.plaque" data-ph="\uB77C\uBCA8" style="margin-bottom:10px">'+esc(L.plaque||"")+'</div>'+
+    '<div class="mini-lbl" contenteditable="true" data-edit="labels.plaque" data-ph="\uB77C\uBCA8" style="margin-bottom:10px">'+(L.plaque||"")+'</div>'+
     (badge?'<div class="pl-badge"><i class="fa-solid fa-calendar-check"></i> '+esc(badge)+'</div>':"")+
     '<div class="pl-title eh" contenteditable="true" data-rich data-edit="plaque.title" data-ph="\uC608: \uC6B0\uB9AC\uC758 3\uC8FC\uB144 \u00B7 \uCC98\uC74C \uB9CC\uB09C \uB0A0">'+(pl.title||"")+'</div>'+
     '<div class="pl-date">'+fmtDate(d.startDate)+' \uAE30\uC900</div>'+
@@ -736,10 +737,10 @@ function closePanel(){$("#scrim").classList.remove("show");$("#cpanel").classLis
 
 /* view mode */
 function enterView(){document.body.dataset.mode="view";}
-function exitView(){document.body.dataset.mode="edit";}
+function exitView(){if(sharedSession)return;document.body.dataset.mode="edit";}
 
 /* rich text */
-function richAncestor(node){while(node&&node!==document.body){if(node.nodeType===1&&node.hasAttribute&&node.hasAttribute("data-rich"))return node;node=node.parentNode;}return null;}
+function richAncestor(node){while(node&&node!==document.body){if(node.nodeType===1&&node.getAttribute&&node.getAttribute("contenteditable")==="true")return node;node=node.parentNode;}return null;}
 function updateRtbar(){
   var bar=$("#rtbar");if(document.body.dataset.mode==="view"){bar.classList.remove("show");return;}
   var sel=window.getSelection();
@@ -925,7 +926,7 @@ function fetchSharedSite(handle,api){
 
 /* events */
 document.addEventListener("input",function(e){
-  var t=e.target,rich=t.hasAttribute&&t.hasAttribute("data-rich"),val=rich?t.innerHTML:t.textContent;
+  var t=e.target,ce=t.getAttribute&&t.getAttribute("contenteditable")==="true",val=ce?t.innerHTML:t.textContent;
   if(t.dataset.edit==="brand"){state.brand=t.textContent;document.title=t.textContent;}
   else if(t.dataset.edit){setPath(D(),t.dataset.edit,val);}
   else if(t.dataset.mid&&t.dataset.field){var mo=findMs(t.dataset.mid);if(mo)mo[t.dataset.field]=val;}
@@ -941,6 +942,15 @@ document.addEventListener("change",function(e){
   else if(t.id==="customColor2"){state.style.accent2=t.value;applyStyle();syncPanel();}
 });
 document.addEventListener("selectionchange",updateRtbar);
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Enter"||e.isComposing||e.keyCode===229)return;
+  var t=e.target;if(!t||!(t.getAttribute&&t.getAttribute("contenteditable")==="true"))return;
+  if(document.body.dataset.mode==="view"){e.preventDefault();return;}
+  var cls=" "+(t.className||"")+" ",multiline=/ (td-story|td-quote|pl-body|p-lyric) /.test(cls);
+  e.preventDefault();
+  if(multiline||e.shiftKey){document.execCommand("insertLineBreak");syncRich();}
+  else t.blur();
+});
 window.addEventListener("scroll",function(){var b=$("#rtbar");if(b)b.classList.remove("show");});
 document.addEventListener("click",function(e){
   var pe=e.target.closest("[data-pick]");
@@ -1064,8 +1074,8 @@ function boot(){
   else{var ls=loadLocal();if(ls){hydrate(ls);}else{var raw=$("#state-data").textContent.trim();if(raw){try{hydrate(JSON.parse(raw));}catch(e){}}}}
   history.replaceState({view:"board",active:state.active},"");
   applyView("board");syncPanel();
-  if(fromHash){sharedSession=true;enterView();toast("\ubbf8\ub9ac\ubcf4\uae30 \ubaa8\ub4dc \u00b7 \ud3b8\uc9d1\ud558\ub824\uba74 \uc624\ub978\ucabd \uc544\ub798 \ubc84\ud2bc","fa-eye");}
-  else if(uHandle){sharedSession=true;toast("\uacf5\uc720\ub41c \uc0ac\uc774\ud2b8\ub97c \ubd88\ub7ec\uc624\ub294 \uc911...","fa-cloud-arrow-down");
+  if(fromHash){sharedSession=true;document.body.classList.add("shared");enterView();toast("\ubbf8\ub9ac\ubcf4\uae30 \ubaa8\ub4dc \u00b7 \uacf5\uc720\ub41c \uae30\ub85d\uc785\ub2c8\ub2e4","fa-eye");}
+  else if(uHandle){sharedSession=true;document.body.classList.add("shared");toast("\uacf5\uc720\ub41c \uc0ac\uc774\ud2b8\ub97c \ubd88\ub7ec\uc624\ub294 \uc911...","fa-cloud-arrow-down");
     fetchSharedSite(uHandle,uApi).then(function(data){if(data){hydrate(data);openMs=null;applyView("board");syncPanel();enterView();toast("\ubbf8\ub9ac\ubcf4\uae30 \ubaa8\ub4dc","fa-eye");}else toast("\ud574\ub2f9 \ub9c1\ud06c\uc758 \ub0b4\uc6a9\uc744 \ucc3e\uc9c0 \ubabb\ud588\uc5b4\uc694","fa-triangle-exclamation");}).catch(function(err){toast("\ubd88\ub7ec\uc624\uae30 \uc2e4\ud328: "+err.message,"fa-triangle-exclamation");});}
   document.querySelectorAll(".reveal").forEach(function(el,i){setTimeout(function(){el.classList.add("in");},120+i*120);});
   window.addEventListener("scroll",function(){var tb=$("#topbar");if(window.scrollY>10)tb.classList.add("scrolled");else tb.classList.remove("scrolled");});
