@@ -503,7 +503,7 @@ function pickImage(cb){var i=document.createElement("input");i.type="file";i.acc
 function pickFile(acc,cb){var i=document.createElement("input");i.type="file";i.accept=acc;i.onchange=function(){var f=i.files&&i.files[0];if(!f)return;var r=new FileReader();r.onload=function(){cb(r.result);};r.readAsDataURL(f);};i.click();}
 function slugify(s){return String(s||"").toLowerCase().replace(/[^a-z0-9\-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);}
 
-function saveLocal(){if(sharedSession)return;try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){if(!saveLocal._w){saveLocal._w=true;toast("\uc790\ub3d9 \uc800\uc7a5 \uc6a9\ub7c9 \ucd08\uacfc \u00b7 \ubc31\uc5c5 \ud30c\uc77c\uc744 \uc774\uc6a9\ud574\uc8fc\uc138\uc694","fa-circle-info");}}}
+function saveLocal(){if(sharedSession)return;try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){if(!saveLocal._w){saveLocal._w=true;toast("\uc0ac\uc9c4\uc774 \ub9ce\uc544 \ube0c\ub77c\uc6b0\uc800 \uc790\ub3d9\uc800\uc7a5 \uc6a9\ub7c9\uc744 \ub118\uc5c8\uc5b4\uc694 \u00b7 \uc0c1\ub2e8 '\uc800\uc7a5'\uc73c\ub85c \ud074\ub77c\uc6b0\ub4dc\uc5d0 \uc800\uc7a5\ud558\uc138\uc694","fa-cloud-arrow-up");}}}
 function loadLocal(){try{var r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
 function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(e){}}
 
@@ -1087,8 +1087,12 @@ function boot(){
   buildPanel();
   var uHandle=hashParam("u"),uApi=hashParam("api"),fromHash=readHash();
   if(!uHandle&&!fromHash){var raw=location.hash.replace(/^#/,"");if(raw&&raw.indexOf("=")<0&&raw.indexOf("&")<0&&/^[A-Za-z0-9\-]+$/.test(raw))uHandle=decodeURIComponent(raw);}
+  var ls=null;
   if(fromHash){hydrate(fromHash);}
-  else{var ls=loadLocal();if(ls){hydrate(ls);}else{var raw=$("#state-data").textContent.trim();if(raw){try{hydrate(JSON.parse(raw));}catch(e){}}}}
+  else{ls=loadLocal();if(ls){hydrate(ls);}else{var raw=$("#state-data").textContent.trim();if(raw){try{hydrate(JSON.parse(raw));}catch(e){}}}}
+  if(!fromHash&&!uHandle&&!ls&&(typeof cfToken==="function")&&cfToken()){
+    apiFetch("/api/load",{method:"GET"}).then(function(j){if(j&&j.data){hydrate(j.data);openMs=null;applyView("board");syncPanel();toast("\ud074\ub77c\uc6b0\ub4dc\uc5d0\uc11c \ubd88\ub7ec\uc654\uc5b4\uc694","fa-cloud-arrow-down");}}).catch(function(){});
+  }
   history.replaceState({view:"board",active:state.active},"");
   applyView("board");syncPanel();
   if(fromHash){sharedSession=true;document.body.classList.add("shared");enterView();toast("\ubbf8\ub9ac\ubcf4\uae30 \ubaa8\ub4dc \u00b7 \uacf5\uc720\ub41c \uae30\ub85d\uc785\ub2c8\ub2e4","fa-eye");}
